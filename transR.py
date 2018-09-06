@@ -58,7 +58,7 @@ class TransRModel(object):
 			self.neg_t = tf.placeholder(tf.int32, [batch_size])
 			self.neg_r = tf.placeholder(tf.int32, [batch_size])
 
-		with tf.name_scope("embedding"):
+		with tf.name_scope("embedding"):#rel_matrix初始化为对角矩阵
 			if ent_init != None:
 				self.ent_embeddings = tf.Variable(np.loadtxt(ent_init), name = "ent_embedding", dtype = np.float32)
 			else:
@@ -68,12 +68,12 @@ class TransRModel(object):
 			else:
 				self.rel_embeddings = tf.get_variable(name = "rel_embedding", shape = [relation_total, sizeR], initializer = tf.contrib.layers.xavier_initializer(uniform = False))
 			
-			rel_matrix = np.zeros([relation_total, sizeR * sizeE], dtype = np.float32)
+			rel_matrix = np.zeros([relation_total, sizeR * sizeE], dtype = np.float32)#sizeR是relation的embedding大小，默认100维
 			for i in range(relation_total):
 				for j in range(sizeR):
 					for k in range(sizeE):
 						if j == k:
-							rel_matrix[i][j * sizeE + k] = 1.0
+							rel_matrix[i][j * sizeE + k] = 1.0#相当于sizeE*sizeR的矩阵为对角线元素为1
 			self.rel_matrix = tf.Variable(rel_matrix, name = "rel_matrix")
 
 		with tf.name_scope('lookup_embeddings'):
