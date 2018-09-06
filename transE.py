@@ -34,7 +34,7 @@ class TransEModel(object):
 		entity_total = config.entity
 		relation_total = config.relation
 		batch_size = config.batch_size
-		size = config.hidden_size
+		size = config.hidden_size#100
 		margin = config.margin
 
 		self.pos_h = tf.placeholder(tf.int32, [None])
@@ -45,9 +45,11 @@ class TransEModel(object):
 		self.neg_t = tf.placeholder(tf.int32, [None])
 		self.neg_r = tf.placeholder(tf.int32, [None])
 
-		with tf.name_scope("embedding"):
+		with tf.name_scope("embedding"):#tf.get_variable() 会检查当前命名空间下是否存在同样name的变量，可以方便共享变量
 			self.ent_embeddings = tf.get_variable(name = "ent_embedding", shape = [entity_total, size], initializer = tf.contrib.layers.xavier_initializer(uniform = False))
 			self.rel_embeddings = tf.get_variable(name = "rel_embedding", shape = [relation_total, size], initializer = tf.contrib.layers.xavier_initializer(uniform = False))
+			
+			
 			pos_h_e = tf.nn.embedding_lookup(self.ent_embeddings, self.pos_h)
 			pos_t_e = tf.nn.embedding_lookup(self.ent_embeddings, self.pos_t)
 			pos_r_e = tf.nn.embedding_lookup(self.rel_embeddings, self.pos_r)
